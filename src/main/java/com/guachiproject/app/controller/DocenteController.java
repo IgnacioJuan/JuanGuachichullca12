@@ -32,6 +32,13 @@ public class DocenteController {
     public ResponseEntity< List<Docente>> obtenerLista() {
         return new ResponseEntity<>(docenteService.findByAll(), HttpStatus.OK);
     }
+	@GetMapping("/buscar/{id}")
+    public ResponseEntity<Docente> buscar(@PathVariable Integer id) {
+		if(docenteService.findById(id)==null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(docenteService.findById(id), HttpStatus.OK);
+    }
     
     @PostMapping("/crear")
     public ResponseEntity<Docente> crear(@Valid @RequestBody Docente c){
@@ -53,9 +60,15 @@ public class DocenteController {
         } else {
             try {
             	docente.setNombre(c.getNombre());
-            	docente.setApellido(c.getApellido());
-            	docente.setEmail(c.getEmail());
-                return new ResponseEntity<>(docenteService.save(docente), HttpStatus.CREATED);
+            	if(docente.getNombre().equals(c.getNombre())) {
+            		docente.setApellido(c.getApellido());
+                	docente.setEmail(c.getEmail());
+                    return new ResponseEntity<>(docenteService.save(docente), HttpStatus.CREATED);
+            		
+            	}else {
+            		return new ResponseEntity<>(HttpStatus.CONFLICT);
+            	}
+            	
             } catch (Exception e) {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
             }

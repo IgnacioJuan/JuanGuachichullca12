@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.guachiproject.app.entity.Asignatura;
+import com.guachiproject.app.entity.Docente;
 import com.guachiproject.app.service.AsignaturaService;
 
 import jakarta.validation.Valid;
@@ -30,6 +31,13 @@ public class AsignaturaController {
 	@GetMapping("/listar")
     public ResponseEntity< List<Asignatura>> obtenerLista() {
         return new ResponseEntity<>(asignaturaService.findByAll(), HttpStatus.OK);
+    }
+	@GetMapping("/buscar/{id}")
+    public ResponseEntity<Asignatura> buscar(@PathVariable Integer id) {
+		if(asignaturaService.findById(id)==null) {
+        	return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(asignaturaService.findById(id), HttpStatus.OK);
     }
     
     @PostMapping("/crear")
